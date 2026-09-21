@@ -93,7 +93,7 @@ def reproducir_playlist(palabra):
     if not videos:
         return False
 
-    url = f"https://www.youtube.com/watch?v={videos[0]}&playlist={','.join(videos[1:])}"
+    url = f"http://www.youtube.com/watch_videos?video_ids={','.join(videos)}"
     webbrowser.open(url)
 
     return True

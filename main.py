@@ -10,9 +10,9 @@ import dj
 
 
 # Opciones de voz / idioma
-id1 = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_DAVID_11.0"
-id2 = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0"
-id3 = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-MX_SABINA_11.0"
+id1 = r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_DAVID_11.0"
+id2 = r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0"
+id3 = r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-MX_SABINA_11.0"
 
 # Escuchar nuestro microfono y devolver el audio como texto
 def transformar_audio_texto():
@@ -151,17 +151,38 @@ def centro_pedido():
             pywhatkit.search(pedido)
             hablar("Esto es lo que he encontrado")
             continue
-        elif "playlist" in pedido:
-            genero = pedido.replace("playlist", "").replace("de", "").strip()
+        elif "género" in pedido or "genero" in pedido or "playlist" in pedido:
+            genero = pedido.replace("playlist", "").replace("género", "").replace("genero", "").replace("reproducir", "").replace("de", "").strip()
             if dj.reproducir_playlist(genero):
-                hablar(f"Reproduciendo playlist de {genero}")
+                hablar(f"Reproduciendo mi lista especial de {genero}")
             else:
-                hablar("No tengo una playlist para ese género.")
+                hablar(f"Reproduciendo un mix de {genero} en YouTube")
+                pywhatkit.playonyt(f"mix musica {genero}")
             continue
         elif "reproducir" in pedido:
             hablar("Reproduciendo")
             pedido = pedido.replace("reproducir", "").strip()
+            if "album" in pedido or "álbum" in pedido:
+                pedido = pedido + " full album completo"
             pywhatkit.playonyt(pedido)
+            continue
+        elif "tema random" in pedido or "canción random" in pedido or "cancion random" in pedido:
+            import random
+            canciones = [
+                "Bohemian Rhapsody Queen",
+                "Blinding Lights The Weeknd",
+                "Take On Me a-ha",
+                "Smells Like Teen Spirit Nirvana",
+                "Billie Jean Michael Jackson",
+                "Uptown Funk Bruno Mars",
+                "De Musica Ligera Soda Stereo",
+                "Mil Horas Los Abuelos de la Nada",
+                "Levitating Dua Lipa",
+                "As It Was Harry Styles"
+            ]
+            tema_elegido = random.choice(canciones)
+            hablar(f"Me parece genial, reproduciendo un tema aleatorio: {tema_elegido}")
+            pywhatkit.playonyt(tema_elegido)
             continue
         elif "chiste" in pedido:
             hablar(pyjokes.get_joke("es"))
